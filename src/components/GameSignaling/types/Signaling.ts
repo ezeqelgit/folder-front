@@ -1,6 +1,14 @@
 export type Signaling = {
+  wires: Wires
+  timer: Timer
+}
+
+export type Wires = {
   total: number
   correct: number
-  timer: number
-  minTimer: number
+}
+
+export type Timer = {
+  start: number
+  end: number
 }

@@ -286,6 +286,33 @@ $base: 1920;
             align-items: center;
             justify-content: center;
             position: relative;
+            overflow: hidden;
+
+            @keyframes blink {
+              0%, 100% {
+                opacity: 1;
+              }
+              50% {
+                opacity: 0;
+              }
+            }
+
+            .effect {
+              position: absolute;
+              width: pxToVw(150);
+              height: pxToVw(50);
+              background-color: #ff2600;
+              filter: blur(pxToVw(80));
+
+              &.blink {
+                animation: blink 1s linear infinite;
+              }
+            }
+
+            img {
+              width: 100%;
+              height: 100%;
+            }
 
             .count {
               position: absolute;

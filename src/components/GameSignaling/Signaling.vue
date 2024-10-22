@@ -84,9 +84,10 @@
               </div>
             </div>
             <div class="timer">
-              <img :src="svg['timer']">
+              <img :src="svg[EndTimerValue ? 'endtimer' : 'starttimer']">
+              <div class="effect" :class="{ blink: EndTimerValue }" v-if="EndTimerValue"></div>
               <div class="count">
-                <span>16:34</span>
+                <span :style="{ color: timerColor }">{{ formattedTime }}</span>
               </div>
             </div>
             <div class="task">

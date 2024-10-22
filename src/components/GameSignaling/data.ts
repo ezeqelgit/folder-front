@@ -1,11 +1,13 @@
-import { defineComponent, ref, onMounted, onBeforeUnmount } from 'vue';
+import { defineComponent, ref, onMounted, onBeforeUnmount, computed } from "vue"
 import { ImportImages } from "../../utils/ImportImages"
+import { Timer, Signaling } from "./types/Signaling"
+import { useStore } from "vuex"
 
 const svg = ImportImages(require.context('./assets/svg/', false, /\.(png|jpe?g|svg)$/));
 const wires = ImportImages(require.context('./assets/wires/', false, /\.(png|jpe?g|svg)$/));
 const images = ImportImages(require.context('./assets/img/', false, /\.(png|jpe?g|svg)$/));
 
-export default defineComponent({
+export default defineComponent({ 
   data() {
     return {
       svg,
@@ -45,9 +47,8 @@ export default defineComponent({
     };
 
     const onMouseDown = (event: MouseEvent) => {
-      if (coverAnimating.value && event.button === 0) { // Проверяем, что нажата ЛКМ
+      if (coverAnimating.value && event.button === 0) {
         isDragging.value = true;
-        // Устанавливаем начальные координаты
         const offsetX = event.clientX - parseInt(coverPosition.value.left);
         const offsetY = event.clientY - parseInt(coverPosition.value.top);
         
@@ -83,6 +84,45 @@ export default defineComponent({
       }
     });
 
+    const store = useStore<Signaling>();
+
+    const Timer = computed(() => {
+      return store.getters.getTimer as Timer; 
+    });
+
+    const StartTimerValue = ref(Timer.value.start);
+    let interval: ReturnType<typeof setInterval> | null = null;
+
+    const EndTimerValue = computed(() => StartTimerValue.value <= Timer.value.end);
+
+    const timerColor = computed(() => {
+      return EndTimerValue.value ? 'rgb(255, 73, 76)' : '';
+    });
+
+    const formattedTime = computed(() => {
+      const minutes = Math.floor(StartTimerValue.value / 60);
+      const seconds = StartTimerValue.value % 60;
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    });
+
+    const startTimer = () => {
+      interval = setInterval(() => {
+        if (StartTimerValue.value > 0) {
+          StartTimerValue.value--;
+        }
+      }, 1000);
+    };
+
+    onMounted(() => {
+      startTimer();
+    });
+
+    onBeforeUnmount(() => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    });
+
     return {
       sealVisible,
       bolts,
@@ -90,7 +130,12 @@ export default defineComponent({
       removeBolt,
       isSealDisappearing,
       coverAnimating,
-      coverPosition
+      coverPosition,
+      Timer,
+      formattedTime,
+      StartTimerValue,
+      EndTimerValue,
+      timerColor
     };
   },
 });
