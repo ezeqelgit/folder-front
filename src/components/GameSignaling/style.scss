@@ -1,0 +1,380 @@
+@use "sass:math";
+
+$base: 1920;
+
+@function pxToVw($px) {
+  @return ($px / $base) * 100vw;
+}
+
+.Signaling {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-image: url("./assets/img/background.png");
+  user-select: none;
+  overflow: hidden;
+
+  .windowGame {
+    width: pxToVw(1157);
+    height: pxToVw(770);
+
+    .table {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+
+      .workFlow {
+        width: pxToVw(977);
+        height: pxToVw(590);
+        position: absolute;
+        display: flex;
+        justify-content: space-between;
+        z-index: 99;
+
+        .process {
+          width: pxToVw(683);
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+
+          img {
+            width: 100%;
+            height: 100%;
+          }
+
+          .cover { 
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: transform 1s ease, scale 1s ease;
+
+            &.animating {
+              transform: translateY(50px) scale(1.2);
+            }
+
+            img {
+              width: 100%;
+              height: 100%;
+              pointer-events: none;
+            }
+
+            .seal{
+              position: absolute;
+              left: 5%;
+              top: 1%;
+              width: pxToVw(150);
+              height: pxToVw(150);
+              transition: opacity 1s ease, transform 1s ease;
+
+              &.disappearing {
+                opacity: 0; 
+                transform: scale(1.5);
+              }
+
+              img {
+                width: 100%;
+                height: 100%;
+              }
+            }
+
+            .bolts {
+              height: pxToVw(547);
+              position: absolute;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+
+              img {
+                width: pxToVw(51);
+                height: pxToVw(51);
+                transition: transform 0.5s ease, opacity 1s ease;
+                pointer-events: auto;
+
+                &.rotating {
+                  animation: spinAndScale 2s linear;
+                }
+              
+                &.removed {
+                  opacity: 0;
+                }
+              }
+
+              @keyframes spinAndScale {
+                from {
+                  transform: rotate(0deg) scale(1);
+                }
+                to {
+                  transform: rotate(-720deg) scale(1.5);
+                }
+              }
+            }
+          }
+
+          .wiresContainer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .wires {
+              width: pxToVw(800);
+              height: pxToVw(502);
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              position: absolute;
+              z-index: 1;
+  
+              .cellWire {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                position: relative;
+  
+                .leftPlug {
+                  width: pxToVw(100);
+                  height: pxToVw(38);
+                  box-shadow: inset 0px 0px 14px 0px rgba(0, 0, 0, 0.75);
+                  background: radial-gradient(216.18% 124.06% at 20% 50%,rgba(255, 255, 255, 0.2),rgba(153, 153, 153, 0) 83.5%,rgba(0, 0, 0, 0.2) 100%), linear-gradient(180.00deg, rgb(37, 37, 37),rgb(37, 37, 37) 100%);
+                  border-radius: pxToVw(6);
+                  z-index: 2;
+                }
+  
+                .wire {
+                  width: pxToVw(610);
+                  height: 100%;
+                  position: absolute;
+                  left: 50%;
+                  transform: translate(-50%);
+  
+                  img {
+                    width: 100%;
+                    height: 100%;
+                  }
+                }
+  
+                .rightPlug {
+                  width: pxToVw(100);
+                  height: pxToVw(38);
+                  box-shadow: inset 0px 0px 14px 0px rgba(0, 0, 0, 0.75);
+                  background: radial-gradient(216.18% 124.06% at 20% 50%,rgba(255, 255, 255, 0.2),rgba(153, 153, 153, 0) 83.5%,rgba(0, 0, 0, 0.2) 100%), linear-gradient(180.00deg, rgb(37, 37, 37),rgb(37, 37, 37) 100%);
+                  border-radius: pxToVw(6);
+                  z-index: 2;
+                }
+              }
+            }
+          }
+
+          .wires {
+            width: pxToVw(800);
+            height: pxToVw(502);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: absolute;
+            overflow: hidden;
+            z-index: 1;
+
+            .cellWire {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              position: relative;
+
+              .leftPlug {
+                width: pxToVw(100);
+                height: pxToVw(38);
+                box-shadow: inset 0px 0px 14px 0px rgba(0, 0, 0, 0.75);
+                background: radial-gradient(216.18% 124.06% at 20% 50%,rgba(255, 255, 255, 0.2),rgba(153, 153, 153, 0) 83.5%,rgba(0, 0, 0, 0.2) 100%), linear-gradient(180.00deg, rgb(37, 37, 37),rgb(37, 37, 37) 100%);
+                border-radius: pxToVw(6);
+                z-index: 2;
+              }
+
+              .wire {
+                width: pxToVw(610);
+                height: 100%;
+                position: absolute;
+                left: 50%;
+                transform: translate(-50%);
+
+                img {
+                  width: 100%;
+                  height: 100%;
+                }
+              }
+
+              .rightPlug {
+                width: pxToVw(100);
+                height: pxToVw(38);
+                box-shadow: inset 0px 0px 14px 0px rgba(0, 0, 0, 0.75);
+                background: radial-gradient(216.18% 124.06% at 20% 50%,rgba(255, 255, 255, 0.2),rgba(153, 153, 153, 0) 83.5%,rgba(0, 0, 0, 0.2) 100%), linear-gradient(180.00deg, rgb(37, 37, 37),rgb(37, 37, 37) 100%);
+                border-radius: pxToVw(6);
+                z-index: 2;
+              }
+            }
+          }
+        }
+
+        .info {
+          width: pxToVw(263);
+          display: flex;
+          flex-direction: column;
+          gap: pxToVw(35);
+          margin-top: pxToVw(16);
+
+          .header {
+            display: flex;
+            align-items: center;
+            gap: pxToVw(9);
+            height: pxToVw(53);
+
+            .gameLogo {
+              width: pxToVw(53);
+              height: pxToVw(53);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              img {
+                width: 100%;
+                height: 100%;
+              }
+            }
+
+            .nameOfGame {
+              display: flex;
+              flex-direction: column;
+
+              span {
+                font-family: "Disket Mono";
+                text-transform: uppercase;
+                font-size: pxToVw(20);
+                font-weight: 400
+              }
+
+              span:first-child {
+                font-size: pxToVw(17);
+              }
+            }
+          }
+
+          .timer {
+            width: pxToVw(184);
+            height: pxToVw(72);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+
+            .count {
+              position: absolute;
+              width: 100%;
+              height: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              span {
+                font-family: "Disket Mono";
+                font-size: pxToVw(35);
+                font-weight: 400;
+                color: #29D874;
+              }
+            }
+          }
+
+          .task {
+            width: pxToVw(263);
+            height: pxToVw(160);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            img { 
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+            
+            .goals {
+              position: absolute;
+              width: pxToVw(223);
+              height: pxToVw(116);
+              display: flex;
+              flex-direction: column;
+              gap: pxToVw(16);
+
+              .cellGoal {
+                display: flex;
+                align-items: center;
+                gap: pxToVw(14);
+
+                .round {
+                  width: pxToVw(14);
+                  height: pxToVw(14);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  position: relative;
+                  border-radius: 100%;
+                  box-shadow: 0px 0px 13.9px 0px rgba(255, 0, 0, 0);
+                  background: radial-gradient(61.00% 61.00% at 50% 50%,rgb(255, 0, 0),rgb(143, 0, 0) 100%);
+
+                  .status {
+                    width: pxToVw(10);
+                    height: pxToVw(10);
+                    position: absolute;
+                    filter: blur(pxToVw(26));
+                    border-radius: 100%;
+                    background: rgb(255, 56, 56)
+                  }
+                }
+
+                span {
+                  font-size: pxToVw(14);
+                  color: rgb(10, 47, 18);
+                  font-family: "d_Kallisto";
+                  font-weight: 400;
+                }
+              }
+            }
+          }
+
+          .dynamic {
+            width: pxToVw(65);
+            height: pxToVw(65);
+            display: flex;
+            gap: pxToVw(40);
+            
+            img {
+              width: 100%;
+              height: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+}

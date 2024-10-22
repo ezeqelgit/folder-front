@@ -1,0 +1,7 @@
+@use "sass:math";
+
+$base: 1920;
+
+@function pxToVw($px) {
+  @return ($px / $base) * 100vw;
+}

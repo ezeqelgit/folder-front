@@ -1,0 +1,13 @@
+@font-face {
+  font-family: "Disket Mono";
+  src: url("./fonts/Disket-Mono.ttf");
+  font-style: normal;
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "d_Kallisto";
+  src: url("./fonts/d_Kallisto.ttf");
+  font-style: normal;
+  font-weight: normal;
+}
