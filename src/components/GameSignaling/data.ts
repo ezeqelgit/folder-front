@@ -61,6 +61,7 @@ export default defineComponent({
     const isTaskCompleted = ref(false);
     const processRect = ref<DOMRect | null>(null);
     const isSecondStageAllowed = ref(false);
+    const canInteractWithWires = ref(false);
     const isLoss = ref(false);
     const isComplete = ref(false);
 
@@ -209,6 +210,7 @@ export default defineComponent({
     
         if (!isOverlapping) {
           updateGoalsForCover();
+          canInteractWithWires.value = true;
           activateNextGoalsStage();
         }
       }
@@ -223,6 +225,7 @@ export default defineComponent({
     const blinkVisibility = ref<Partial<Record<WiresList, boolean>>>({});
 
     const handleClick = (wire: WiresList) => {
+      if (canInteractWithWires.value == false) return
       if(isLoss.value == false){
         if (correctWires.includes(wire) && !isRuined(wire)) {
           ruinedWires.value.add(wire);
@@ -250,6 +253,7 @@ export default defineComponent({
     };
 
     const isBlinkVisible = (wire: WiresList) => {
+      if (canInteractWithWires.value == false) return
       if (isLoss.value == false) {
         return blinkVisibility.value[wire] && !isRuined(wire);
       }
