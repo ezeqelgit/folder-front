@@ -5,7 +5,8 @@
         <img :src="svg['table']">
         <div class="workFlow">
           <div class="process">
-            <div class="cover" :class="{ animating: coverAnimating }" :style="{ top: coverPosition.top, left: coverPosition.left }">
+            <div class="cover" :class="{ animating: coverAnimating }"
+              :style="{ top: coverPosition.top, left: coverPosition.left }">
               <div class="seal" v-if="sealVisible" @click="removeSeal" :class="{ disappearing: isSealDisappearing }">
                 <img :src="images['seal']">
               </div>
@@ -93,35 +94,16 @@
             <div class="task">
               <img :src="svg['task']">
               <div class="goals">
-                <div class="cellGoal">
-                  <div class="round">
-                    <div class="status"></div>
+                <div v-for="(property, index) in wiresColor" :key="index" class="cellGoal">
+                  <div class="round" :style="{ background: isFirstTaskCompleted && index === 0 ? property.roundBackground : property.background }">
+                    <div class="status" :style="{ filter: property.filter, background: isFirstTaskCompleted && index === 0 ? property.roundStatus : property.status }"></div>
                   </div>
-                  <span>Целостность пломбы</span>
-                </div>
-                <div class="cellGoal">
-                  <div class="round">
-                    <div class="status"></div>
-                  </div>
-                  <span>Закрученность болтов</span>
-                </div>
-                <div class="cellGoal">
-                  <div class="round">
-                    <div class="status"></div>
-                  </div>
-                  <span>Закрытая крышка</span>
-                </div>
-                <div class="cellGoal">
-                  <div class="round">
-                    <div class="status"></div>
-                  </div>
-                  <span>Целостность проводов</span>
+                  <span :style="{ color: property.isCompleted ? 'rgb(41, 216, 116)' : '' }">{{ property.goal }}</span>
                 </div>
               </div>
-            </div>
+            </div> 
             <div class="dynamic">
-              <img :src="svg['dynamic']">
-              <img :src="svg['dynamic']">
+              <img v-for="(item, index) in dynamicImages" :key="index" :src="svg[item]">
             </div>
           </div>
         </div>

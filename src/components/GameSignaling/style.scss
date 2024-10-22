@@ -270,11 +270,13 @@ $base: 1920;
                 font-family: "Disket Mono";
                 text-transform: uppercase;
                 font-size: pxToVw(20);
-                font-weight: 400
+                font-weight: 400;
+                color: rgb(79, 79, 79)
               }
 
               span:first-child {
                 font-size: pxToVw(17);
+                color: rgb(56, 56, 56)
               }
             }
           }

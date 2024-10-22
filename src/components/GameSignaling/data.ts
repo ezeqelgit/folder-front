@@ -1,6 +1,7 @@
 import { defineComponent, ref, onMounted, onBeforeUnmount, computed } from "vue"
 import { ImportImages } from "../../utils/ImportImages"
 import { Timer, Signaling } from "./types/Signaling"
+import { Goal, WiresColor } from "./types/Goals"
 import { useStore } from "vuex"
 
 const svg = ImportImages(require.context('./assets/svg/', false, /\.(png|jpe?g|svg)$/));
@@ -25,11 +26,33 @@ export default defineComponent({
     ]);
     const coverPosition = ref({ top: '0px', left: '0px' });
     const isDragging = ref(false);
+    const wiresColor = Object.values(WiresColor);
+    const isFirstTaskCompleted = ref(false);
+
+    const updateGoalsForSeal = () => {
+      const sealIntegrityGoal = wiresColor[Goal.SealIntegrity];
+      sealIntegrityGoal.isCompleted = true;
+      sealIntegrityGoal.background = "radial-gradient(61.00% 61.00% at 50% 50%, rgb(60, 255, 143), rgb(36, 164, 91) 100%)";
+      sealIntegrityGoal.status = "rgb(38, 203, 109)";
+      sealIntegrityGoal.filter = "blur(20.6px)";
+    };
+    
+    const updateGoalsForBolts = () => {
+      const boltTightnessGoal = wiresColor[Goal.BoltTightness];
+      boltTightnessGoal.isCompleted = true;
+      boltTightnessGoal.background = "radial-gradient(61.00% 61.00% at 50% 50%, rgb(60, 255, 143), rgb(36, 164, 91) 100%)";
+      boltTightnessGoal.status = "rgb(38, 203, 109)";
+      boltTightnessGoal.filter = "blur(20.6px)";
+    };
+
+    const dynamicImages = ['dynamic', 'dynamic'];
 
     const removeSeal = () => {
       isSealDisappearing.value = true;
       setTimeout(() => {
         sealVisible.value = false;
+        updateGoalsForSeal();
+        isFirstTaskCompleted.value = true;
       }, 1000);
     };
 
@@ -41,6 +64,7 @@ export default defineComponent({
           bolt.isRemoved = true;
           if (bolts.value.every(b => b.isRemoved)) {
             coverAnimating.value = true;
+            updateGoalsForBolts();
           }
         }, 1000);
       }
@@ -69,13 +93,6 @@ export default defineComponent({
         window.addEventListener('mouseup', onMouseUp);
       }
     };
-
-    onMounted(() => {
-      const coverElement = document.querySelector('.cover');
-      if (coverElement) {
-        coverElement.addEventListener('mousedown', onMouseDown as EventListener);
-      }
-    });
 
     onBeforeUnmount(() => {
       const coverElement = document.querySelector('.cover');
@@ -113,8 +130,18 @@ export default defineComponent({
       }, 1000);
     };
 
-    onMounted(() => {
+    const activateNextGoalsStage = () => {
+      const sealIntegrityGoal = wiresColor[Goal.SealIntegrity];
+      sealIntegrityGoal.status = "rgb(38, 203, 109)";
+      sealIntegrityGoal.background = "radial-gradient(61.00% 61.00% at 50% 50%, rgb(60, 255, 143), rgb(36, 164, 91) 100%)";
+    };
+
+    onMounted(async () => {
       startTimer();
+      const coverElement = document.querySelector('.cover');
+      if (coverElement) {
+        coverElement.addEventListener('mousedown', onMouseDown as EventListener);
+      }
     });
 
     onBeforeUnmount(() => {
@@ -135,7 +162,10 @@ export default defineComponent({
       formattedTime,
       StartTimerValue,
       EndTimerValue,
-      timerColor
+      timerColor,
+      dynamicImages,
+      wiresColor,
+      isFirstTaskCompleted,
     };
   },
 });
