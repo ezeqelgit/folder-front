@@ -15,7 +15,7 @@ export type Property = {
   isCompleted: boolean
 }
 
-export const WiresColor: Record<Goal, Property> = {
+export const GoalColor: Record<Goal, Property> = {
   [Goal.SealIntegrity]: {
     goal: "Целостность пломбы",
     background: "radial-gradient(61.00% 61.00% at 50% 50%,rgb(255, 0, 0),rgb(143, 0, 0) 100%)",

@@ -22,54 +22,23 @@
             <img :src="svg['workspace']">
             <div class="wiresContainer">
               <div class="wires">
-                <div class="cellWire">
+                <div v-for="(wire, index) in allWires" :key="index" class="cellWire">
                   <div class="leftPlug"></div>
-                  <div class="wire">
-                    <img :src="wires['red']">
+                  <div class="wire" @mouseenter="showBlinkPart(wire)" @mouseleave="hideBlinkPart(wire)">
+                    <img :src="isRuined(wire) ? WiresColor[wire].ruined : WiresColor[wire].whole">
                   </div>
                   <div class="rightPlug"></div>
-                </div>
-                <div class="cellWire">
-                  <div class="leftPlug"></div>
-                  <div class="wire">
-                    <img :src="wires['green']">
+                  <div class="blinkWrapper" :style="{
+                    left: `${WiresColor[wire].blinkTranslateX}%`,
+                    marginTop: `${WiresColor[wire].blinkTranslateY}%`
+                  }">
+                    <div class="blinkPart" v-if="isBlinkVisible(wire)"
+                      :style="{
+                        backgroundColor: WiresColor[wire].blinkColor ? `#${WiresColor[wire].blinkColor}` : 'transparent'
+                      }"></div>
+                    <div class="blinkOverlay" @click="handleClick(wire)" @mouseenter="showBlinkPart(wire)"
+                      @mouseleave="hideBlinkPart(wire)"></div>
                   </div>
-                  <div class="rightPlug"></div>
-                </div>
-                <div class="cellWire">
-                  <div class="leftPlug"></div>
-                  <div class="wire">
-                    <img :src="wires['white']">
-                  </div>
-                  <div class="rightPlug"></div>
-                </div>
-                <div class="cellWire">
-                  <div class="leftPlug"></div>
-                  <div class="wire">
-                    <img :src="wires['grey']">
-                  </div>
-                  <div class="rightPlug"></div>
-                </div>
-                <div class="cellWire">
-                  <div class="leftPlug"></div>
-                  <div class="wire">
-                    <img :src="wires['blue']">
-                  </div>
-                  <div class="rightPlug"></div>
-                </div>
-                <div class="cellWire">
-                  <div class="leftPlug"></div>
-                  <div class="wire">
-                    <img :src="wires['yellow']">
-                  </div>
-                  <div class="rightPlug"></div>
-                </div>
-                <div class="cellWire">
-                  <div class="leftPlug"></div>
-                  <div class="wire">
-                    <img :src="wires['purple']">
-                  </div>
-                  <div class="rightPlug"></div>
                 </div>
               </div>
             </div>
@@ -94,14 +63,17 @@
             <div class="task">
               <img :src="svg['task']">
               <div class="goals">
-                <div v-for="(property, index) in wiresColor" :key="index" class="cellGoal">
-                  <div class="round" :style="{ background: isFirstTaskCompleted && index === 0 ? property.roundBackground : property.background }">
-                    <div class="status" :style="{ filter: property.filter, background: isFirstTaskCompleted && index === 0 ? property.roundStatus : property.status }"></div>
+                <div v-for="(property, index) in goalColor" :key="index" class="cellGoal">
+                  <div class="round"
+                    :style="{ background: isTaskCompleted && index === 0 ? property.roundBackground : property.background }">
+                    <div class="status"
+                      :style="{ filter: property.filter, background: isTaskCompleted && index === 0 ? property.roundStatus : property.status }">
+                    </div>
                   </div>
                   <span :style="{ color: property.isCompleted ? 'rgb(41, 216, 116)' : '' }">{{ property.goal }}</span>
                 </div>
               </div>
-            </div> 
+            </div>
             <div class="dynamic">
               <img v-for="(item, index) in dynamicImages" :key="index" :src="svg[item]">
             </div>

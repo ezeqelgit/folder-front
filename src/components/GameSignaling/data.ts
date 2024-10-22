@@ -1,12 +1,43 @@
 import { defineComponent, ref, onMounted, onBeforeUnmount, computed, nextTick } from "vue"
 import { ImportImages } from "../../utils/ImportImages"
 import { Timer, Signaling } from "./types/Signaling"
-import { Goal, WiresColor } from "./types/Goals"
+import { Goal, GoalColor } from "./types/Goals"
+import { WiresList, WiresColor  } from './types/Wires'
 import { useStore } from "vuex"
 
 const svg = ImportImages(require.context('./assets/svg/', false, /\.(png|jpe?g|svg)$/));
 const wires = ImportImages(require.context('./assets/wires/', false, /\.(png|jpe?g|svg)$/));
 const images = ImportImages(require.context('./assets/img/', false, /\.(png|jpe?g|svg)$/));
+
+const getRandomWires = (total: number, correct: number): { allWires: WiresList[], correctWires: WiresList[] } => {
+
+  if (total > 7) {
+    total = 7;
+  } else if (total < 1) {
+    total = 1;
+  }
+
+  if (correct < 1) {
+    correct = 1;
+  } else if (correct >= total) {
+    correct = total - 1;
+    if (correct < 1) {
+      correct = 1;
+    }
+  }
+
+  const wiresArray = Object.values(WiresList).filter(value => typeof value === 'number') as WiresList[];
+  const shuffledWires = wiresArray.sort(() => Math.random() - 0.5);
+  const allWires = shuffledWires.slice(0, total);
+  const correctWires = allWires.slice(0, correct);
+
+  console.log(allWires, correctWires);
+  
+  return {
+    allWires,
+    correctWires,
+  };
+};
 
 export default defineComponent({ 
   data() {
@@ -26,13 +57,15 @@ export default defineComponent({
     ]);
     const coverPosition = ref({ top: '0px', left: '0px' });
     const isDragging = ref(false);
-    const wiresColor = Object.values(WiresColor);
-    const isFirstTaskCompleted = ref(false);
+    const goalColor = Object.values(GoalColor);
+    const isTaskCompleted = ref(false);
     const processRect = ref<DOMRect | null>(null);
     const isSecondStageAllowed = ref(false);
+    const isLoss = ref(false);
+    const isComplete = ref(false);
 
     const updateGoalsForSeal = () => {
-      const sealIntegrityGoal = wiresColor[Goal.SealIntegrity];
+      const sealIntegrityGoal = goalColor[Goal.SealIntegrity];
       sealIntegrityGoal.isCompleted = true;
       sealIntegrityGoal.background = "radial-gradient(61.00% 61.00% at 50% 50%, rgb(60, 255, 143), rgb(36, 164, 91) 100%)";
       sealIntegrityGoal.status = "rgb(38, 203, 109)";
@@ -40,7 +73,7 @@ export default defineComponent({
     };
     
     const updateGoalsForBolts = () => {
-      const boltTightnessGoal = wiresColor[Goal.BoltTightness];
+      const boltTightnessGoal = goalColor[Goal.BoltTightness];
       boltTightnessGoal.isCompleted = true;
       boltTightnessGoal.background = "radial-gradient(61.00% 61.00% at 50% 50%, rgb(60, 255, 143), rgb(36, 164, 91) 100%)";
       boltTightnessGoal.status = "rgb(38, 203, 109)";
@@ -48,7 +81,15 @@ export default defineComponent({
     };
 
     const updateGoalsForCover = () => {
-      const coverGoal = wiresColor[Goal.ClosedLid];
+      const coverGoal = goalColor[Goal.ClosedLid];
+      coverGoal.isCompleted = true;
+      coverGoal.background = "radial-gradient(61.00% 61.00% at 50% 50%, rgb(60, 255, 143), rgb(36, 164, 91) 100%)";
+      coverGoal.status = "rgb(38, 203, 109)";
+      coverGoal.filter = "blur(20.6px)";
+    };
+
+    const updateGoalsForFinish = () => {
+      const coverGoal = goalColor[Goal.WireIntegrity];
       coverGoal.isCompleted = true;
       coverGoal.background = "radial-gradient(61.00% 61.00% at 50% 50%, rgb(60, 255, 143), rgb(36, 164, 91) 100%)";
       coverGoal.status = "rgb(38, 203, 109)";
@@ -62,7 +103,7 @@ export default defineComponent({
       setTimeout(() => {
         sealVisible.value = false;
         updateGoalsForSeal();
-        isFirstTaskCompleted.value = true;
+        isTaskCompleted.value = true;
         isSecondStageAllowed.value = false;
         checkCoverPosition();
       }, 1000);
@@ -138,9 +179,16 @@ export default defineComponent({
       }, 1000);
     };
 
+    const stopTimer = () => {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
+    };
+
     const activateNextGoalsStage = () => {
       if (bolts.value.every(bolt => bolt.isRemoved)) {
-        const sealIntegrityGoal = wiresColor[Goal.SealIntegrity];
+        const sealIntegrityGoal = goalColor[Goal.SealIntegrity];
         sealIntegrityGoal.status = "rgb(38, 203, 109)";
         sealIntegrityGoal.background = "radial-gradient(61.00% 61.00% at 50% 50%, rgb(60, 255, 143), rgb(36, 164, 91) 100%)";
       }
@@ -164,6 +212,51 @@ export default defineComponent({
           activateNextGoalsStage();
         }
       }
+    };
+
+    const wires = computed(() => store.getters.getWires);
+    
+    const { allWires, correctWires } = getRandomWires(wires.value.total, wires.value.correct);
+
+    const ruinedWires = ref<Set<WiresList>>(new Set());
+
+    const blinkVisibility = ref<Partial<Record<WiresList, boolean>>>({});
+
+    const handleClick = (wire: WiresList) => {
+      if(isLoss.value == false){
+        if (correctWires.includes(wire) && !isRuined(wire)) {
+          ruinedWires.value.add(wire);
+          blinkVisibility.value[wire] = false;
+
+          if (ruinedWires.value.size === correctWires.length) {
+            isComplete.value = true;
+            isLoss.value = true;
+            updateGoalsForFinish()
+            stopTimer();
+          }
+        } else {
+          isLoss.value = true;
+          stopTimer();
+        }
+      }
+    };
+
+    const showBlinkPart = (wire: WiresList) => {
+        blinkVisibility.value[wire] = true;
+    };
+
+    const hideBlinkPart = (wire: WiresList) => {
+      blinkVisibility.value[wire] = false;
+    };
+
+    const isBlinkVisible = (wire: WiresList) => {
+      if (isLoss.value == false) {
+        return blinkVisibility.value[wire] && !isRuined(wire);
+      }
+    };
+
+    const isRuined = (wire: WiresList) => {
+      return ruinedWires.value.has(wire);
     };
 
     onMounted(async () => {
@@ -201,8 +294,15 @@ export default defineComponent({
       EndTimerValue,
       timerColor,
       dynamicImages,
-      wiresColor,
-      isFirstTaskCompleted,
+      goalColor,
+      isTaskCompleted,
+      allWires,
+      WiresColor,
+      handleClick,
+      isRuined,
+      showBlinkPart,
+      hideBlinkPart,
+      isBlinkVisible,
     };
   },
 });

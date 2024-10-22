@@ -1,8 +1,8 @@
-export enum Wires { 
+export enum WiresList { 
   Red,
   Green,
   White,
-  Grey,
+  Gray,
   Blue,
   Yellow,
   Purple
@@ -11,35 +11,59 @@ export enum Wires {
 export type Property = {
   ruined: string
   whole: string
+  blinkColor: string
+  blinkTranslateX: number
+  blinkTranslateY: number
 }
 
-export const WiresColor: Record<Wires, Property> = {
-  [Wires.Red]: {
-    ruined: require("../assets/wires/red.svg"),
+export const WiresColor: Record<WiresList, Property> = {
+  [WiresList.Red]: {
+    ruined: require("../assets/wires/redRuined.svg"),
     whole: require("../assets/wires/red.svg"),
+    blinkColor: "C91C1C",
+    blinkTranslateX: 42,
+    blinkTranslateY: -2,
   },
-  [Wires.Green]: {
-    ruined: require("../assets/wires/green.svg"),
+  [WiresList.Green]: {
+    ruined: require("../assets/wires/greenRuined.svg"),
     whole: require("../assets/wires/green.svg"),
+    blinkColor: "269E39",
+    blinkTranslateX: 48,
+    blinkTranslateY: 0,
   },
-  [Wires.White]: {
-    ruined: require("../assets/wires/white.svg"),
+  [WiresList.White]: {
+    ruined: require("../assets/wires/whiteRuined.svg"),
     whole: require("../assets/wires/white.svg"),
+    blinkColor: "C5C5C5",
+    blinkTranslateX: 42,
+    blinkTranslateY: -2,
   },
-  [Wires.Grey]: {
-    ruined: require("../assets/wires/grey.svg"),
-    whole: require("../assets/wires/grey.svg"),
+  [WiresList.Gray]: {
+    ruined: require("../assets/wires/grayRuined.svg"),
+    whole: require("../assets/wires/gray.svg"),
+    blinkColor: "424242",
+    blinkTranslateX: 37,
+    blinkTranslateY: 0,
   },
-  [Wires.Blue]: {
-    ruined: require("../assets/wires/blue.svg"),
+  [WiresList.Blue]: {
+    ruined: require("../assets/wires/blueRuined.svg"),
     whole: require("../assets/wires/blue.svg"),
+    blinkColor: "1C8CCB",
+    blinkTranslateX: 42,
+    blinkTranslateY: -2,
   },
-  [Wires.Yellow]: {
-    ruined: require("../assets/wires/yellow.svg"),
+  [WiresList.Yellow]: {
+    ruined: require("../assets/wires/yellowRuined.svg"),
     whole: require("../assets/wires/yellow.svg"),
+    blinkColor: "C88623",
+    blinkTranslateX: 31,
+    blinkTranslateY: 3,
   },
-  [Wires.Purple]: {
-    ruined: require("../assets/wires/purple.svg"),
+  [WiresList.Purple]: {
+    ruined: require("../assets/wires/purpleRuined.svg"),
     whole: require("../assets/wires/purple.svg"),
+    blinkColor: "8C2EB8",
+    blinkTranslateX: 60,
+    blinkTranslateY: 0,
   }
 }
