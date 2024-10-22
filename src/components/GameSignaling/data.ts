@@ -1,4 +1,4 @@
-import { defineComponent, ref, onMounted, onBeforeUnmount, computed } from "vue"
+import { defineComponent, ref, onMounted, onBeforeUnmount, computed, nextTick } from "vue"
 import { ImportImages } from "../../utils/ImportImages"
 import { Timer, Signaling } from "./types/Signaling"
 import { Goal, WiresColor } from "./types/Goals"
@@ -28,6 +28,8 @@ export default defineComponent({
     const isDragging = ref(false);
     const wiresColor = Object.values(WiresColor);
     const isFirstTaskCompleted = ref(false);
+    const processRect = ref<DOMRect | null>(null);
+    const isSecondStageAllowed = ref(false);
 
     const updateGoalsForSeal = () => {
       const sealIntegrityGoal = wiresColor[Goal.SealIntegrity];
@@ -45,6 +47,14 @@ export default defineComponent({
       boltTightnessGoal.filter = "blur(20.6px)";
     };
 
+    const updateGoalsForCover = () => {
+      const coverGoal = wiresColor[Goal.ClosedLid];
+      coverGoal.isCompleted = true;
+      coverGoal.background = "radial-gradient(61.00% 61.00% at 50% 50%, rgb(60, 255, 143), rgb(36, 164, 91) 100%)";
+      coverGoal.status = "rgb(38, 203, 109)";
+      coverGoal.filter = "blur(20.6px)";
+    };
+
     const dynamicImages = ['dynamic', 'dynamic'];
 
     const removeSeal = () => {
@@ -53,6 +63,8 @@ export default defineComponent({
         sealVisible.value = false;
         updateGoalsForSeal();
         isFirstTaskCompleted.value = true;
+        isSecondStageAllowed.value = false;
+        checkCoverPosition();
       }, 1000);
     };
 
@@ -75,11 +87,14 @@ export default defineComponent({
         isDragging.value = true;
         const offsetX = event.clientX - parseInt(coverPosition.value.left);
         const offsetY = event.clientY - parseInt(coverPosition.value.top);
+        checkCoverPosition();
         
         const onMouseMove = (event: MouseEvent) => {
           if (isDragging.value) {
             coverPosition.value.left = `${event.clientX - offsetX}px`;
             coverPosition.value.top = `${event.clientY - offsetY}px`;
+            console.log("Перемещение cover:", coverPosition.value);
+            requestAnimationFrame(checkCoverPosition);
           }
         };
 
@@ -93,13 +108,6 @@ export default defineComponent({
         window.addEventListener('mouseup', onMouseUp);
       }
     };
-
-    onBeforeUnmount(() => {
-      const coverElement = document.querySelector('.cover');
-      if (coverElement) {
-        coverElement.removeEventListener('mousedown', onMouseDown as EventListener);
-      }
-    });
 
     const store = useStore<Signaling>();
 
@@ -131,20 +139,49 @@ export default defineComponent({
     };
 
     const activateNextGoalsStage = () => {
-      const sealIntegrityGoal = wiresColor[Goal.SealIntegrity];
-      sealIntegrityGoal.status = "rgb(38, 203, 109)";
-      sealIntegrityGoal.background = "radial-gradient(61.00% 61.00% at 50% 50%, rgb(60, 255, 143), rgb(36, 164, 91) 100%)";
+      if (bolts.value.every(bolt => bolt.isRemoved)) {
+        const sealIntegrityGoal = wiresColor[Goal.SealIntegrity];
+        sealIntegrityGoal.status = "rgb(38, 203, 109)";
+        sealIntegrityGoal.background = "radial-gradient(61.00% 61.00% at 50% 50%, rgb(60, 255, 143), rgb(36, 164, 91) 100%)";
+      }
+    };
+
+    const checkCoverPosition = () => {
+      if (processRect.value) {
+        const coverTop = parseInt(coverPosition.value.top);
+        const coverLeft = parseInt(coverPosition.value.left);
+        const coverHeight = 650;
+        const coverWidth = 650;
+    
+        const isOverlapping =
+          coverTop < processRect.value.bottom &&
+          coverTop + coverHeight > processRect.value.top &&
+          coverLeft < processRect.value.right &&
+          coverLeft + coverWidth > processRect.value.left;
+    
+        if (!isOverlapping) {
+          updateGoalsForCover();
+          activateNextGoalsStage();
+        }
+      }
     };
 
     onMounted(async () => {
       startTimer();
+      await nextTick();
       const coverElement = document.querySelector('.cover');
       if (coverElement) {
         coverElement.addEventListener('mousedown', onMouseDown as EventListener);
       }
+      processRect.value = document.querySelector('.process')?.getBoundingClientRect() || null;
+      console.log("processRect обновлён:", processRect.value);
     });
 
     onBeforeUnmount(() => {
+      const coverElement = document.querySelector('.cover');
+      if (coverElement) {
+        coverElement.removeEventListener('mousedown', onMouseDown as EventListener);
+      }
       if (interval) {
         clearInterval(interval);
       }
