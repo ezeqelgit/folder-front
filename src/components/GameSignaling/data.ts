@@ -65,6 +65,12 @@ export default defineComponent({
     const canInteractWithWires = ref(false);
     const isLoss = ref(false);
     const isComplete = ref(false);
+    const isCursor = ref(false);
+    const currentCursor = ref("");
+    const cursorPosition = ref({ x: 0, y: 0 });
+    const isCursorWirecutters = ref(false)
+    const isCursorScrewdriver = ref(false)
+
 
     const dynamicImages = ['dynamic', 'dynamic'];
 
@@ -73,6 +79,9 @@ export default defineComponent({
       sealIntegrityGoal.isCompleted = true;
       sealIntegrityGoal.background = sealIntegrityGoal.roundBackground;
       sealIntegrityGoal.status = sealIntegrityGoal.roundStatus;
+      isCursor.value = true;
+      isCursorScrewdriver.value = true;
+      currentCursor.value = require("./assets/img/screwdriver.png");
     }; 
     
     const updateGoalsForBolts = () => {
@@ -80,6 +89,9 @@ export default defineComponent({
       boltTightnessGoal.isCompleted = true;
       boltTightnessGoal.background = boltTightnessGoal.roundBackground;
       boltTightnessGoal.status = boltTightnessGoal.roundStatus;
+      isCursor.value = false;
+      isCursorScrewdriver.value = false;
+      currentCursor.value = "";
     };
 
     const updateGoalsForCover = () => {
@@ -87,6 +99,11 @@ export default defineComponent({
       coverGoal.isCompleted = true;
       coverGoal.background = coverGoal.roundBackground;
       coverGoal.status = coverGoal.roundStatus;
+      if (isComplete.value == false) {
+        isCursor.value = true;
+        isCursorWirecutters.value = true;
+        currentCursor.value = require("./assets/img/wirecutters.png");
+      }
     };
 
     const updateGoalsForFinish = () => {
@@ -94,6 +111,8 @@ export default defineComponent({
       finish.isCompleted = true;
       finish.background = finish.roundBackground;
       finish.status = finish.roundStatus;
+      isCursor.value = false;
+      isCursorWirecutters.value = false;
     };
 
     const removeSeal = () => {
@@ -132,7 +151,6 @@ export default defineComponent({
           if (isDragging.value) {
             coverPosition.value.left = `${event.clientX - offsetX}px`;
             coverPosition.value.top = `${event.clientY - offsetY}px`;
-            console.log("Перемещение cover:", coverPosition.value);
             requestAnimationFrame(checkCoverPosition);
           }
         };
@@ -260,6 +278,11 @@ export default defineComponent({
       return ruinedWires.value.has(wire);
     };
 
+    const updateCursorPosition = (event: MouseEvent) => {
+      cursorPosition.value.x = event.clientX;
+      cursorPosition.value.y = event.clientY;
+    };
+
     onMounted(async () => {
       startTimer();
       await nextTick();
@@ -303,6 +326,12 @@ export default defineComponent({
       showBlinkPart,
       hideBlinkPart,
       isBlinkVisible,
+      isCursor,
+      currentCursor,
+      cursorPosition,
+      updateCursorPosition,
+      isCursorScrewdriver,
+      isCursorWirecutters
     };
   },
 });

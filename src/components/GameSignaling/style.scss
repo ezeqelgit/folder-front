@@ -17,6 +17,47 @@ $base: 1920;
   user-select: none;
   overflow: hidden;
 
+  &.hide-cursor {
+    cursor: none;
+  }
+
+  .screwdriver {
+    position: absolute;
+    z-index: 1001;
+    pointer-events: none;
+
+    width: pxToVw(116);
+    height: pxToVw(116);
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    & img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .wirecutters {
+    position: absolute;
+    z-index: 1001;
+    pointer-events: none;
+
+    width: pxToVw(131);
+    height: pxToVw(111);
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    & img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+
   .windowGame {
     width: pxToVw(1157);
     height: pxToVw(770);

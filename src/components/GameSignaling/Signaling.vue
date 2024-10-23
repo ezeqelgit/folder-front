@@ -1,5 +1,11 @@
 <template>
-  <div class="Signaling">
+  <div @mousemove="updateCursorPosition" :class="['Signaling', { 'hide-cursor': isCursor }]">
+    <div class="screwdriver" v-if="isCursorScrewdriver" :style="{ top: cursorPosition.y -35 + 'px', left: cursorPosition.x -35 + 'px' }">
+      <img :src="currentCursor"/>
+    </div>
+    <div class="wirecutters" v-if="isCursorWirecutters" :style="{ top: cursorPosition.y -35 + 'px', left: cursorPosition.x -35 + 'px' }">
+      <img :src="currentCursor"/>
+    </div>
     <div class="windowGame">
       <div class="table">
         <img :src="svg['table']">
@@ -32,10 +38,9 @@
                     left: `${WiresColor[wire].blinkTranslateX}%`,
                     marginTop: `${WiresColor[wire].blinkTranslateY}%`
                   }">
-                    <div class="blinkPart" v-if="isBlinkVisible(wire)"
-                      :style="{
-                        backgroundColor: WiresColor[wire].blinkColor ? `#${WiresColor[wire].blinkColor}` : 'transparent'
-                      }"></div>
+                    <div class="blinkPart" v-if="isBlinkVisible(wire)" :style="{
+                      backgroundColor: WiresColor[wire].blinkColor ? `#${WiresColor[wire].blinkColor}` : 'transparent'
+                    }"></div>
                     <div class="blinkOverlay" @click="handleClick(wire)" @mouseenter="showBlinkPart(wire)"
                       @mouseleave="hideBlinkPart(wire)"></div>
                   </div>
