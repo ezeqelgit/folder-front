@@ -28,8 +28,9 @@ const getRandomWires = (total: number, correct: number): { allWires: WiresList[]
 
   const wiresArray = Object.values(WiresList).filter(value => typeof value === 'number') as WiresList[];
   const shuffledWires = wiresArray.sort(() => Math.random() - 0.5);
-  const allWires = shuffledWires.slice(0, total);
-  const correctWires = allWires.slice(0, correct);
+  const totalWires = shuffledWires.slice(0, total);
+  const correctWires = totalWires.slice(0, correct);
+  const allWires = totalWires.sort(() => Math.random() - 0.5);
 
   console.log(allWires, correctWires);
   
@@ -65,39 +66,35 @@ export default defineComponent({
     const isLoss = ref(false);
     const isComplete = ref(false);
 
+    const dynamicImages = ['dynamic', 'dynamic'];
+
     const updateGoalsForSeal = () => {
       const sealIntegrityGoal = goalColor[Goal.SealIntegrity];
       sealIntegrityGoal.isCompleted = true;
-      sealIntegrityGoal.background = "radial-gradient(61.00% 61.00% at 50% 50%, rgb(60, 255, 143), rgb(36, 164, 91) 100%)";
-      sealIntegrityGoal.status = "rgb(38, 203, 109)";
-      sealIntegrityGoal.filter = "blur(20.6px)";
-    };
+      sealIntegrityGoal.background = sealIntegrityGoal.roundBackground;
+      sealIntegrityGoal.status = sealIntegrityGoal.roundStatus;
+    }; 
     
     const updateGoalsForBolts = () => {
       const boltTightnessGoal = goalColor[Goal.BoltTightness];
       boltTightnessGoal.isCompleted = true;
-      boltTightnessGoal.background = "radial-gradient(61.00% 61.00% at 50% 50%, rgb(60, 255, 143), rgb(36, 164, 91) 100%)";
-      boltTightnessGoal.status = "rgb(38, 203, 109)";
-      boltTightnessGoal.filter = "blur(20.6px)";
+      boltTightnessGoal.background = boltTightnessGoal.roundBackground;
+      boltTightnessGoal.status = boltTightnessGoal.roundStatus;
     };
 
     const updateGoalsForCover = () => {
       const coverGoal = goalColor[Goal.ClosedLid];
       coverGoal.isCompleted = true;
-      coverGoal.background = "radial-gradient(61.00% 61.00% at 50% 50%, rgb(60, 255, 143), rgb(36, 164, 91) 100%)";
-      coverGoal.status = "rgb(38, 203, 109)";
-      coverGoal.filter = "blur(20.6px)";
+      coverGoal.background = coverGoal.roundBackground;
+      coverGoal.status = coverGoal.roundStatus;
     };
 
     const updateGoalsForFinish = () => {
-      const coverGoal = goalColor[Goal.WireIntegrity];
-      coverGoal.isCompleted = true;
-      coverGoal.background = "radial-gradient(61.00% 61.00% at 50% 50%, rgb(60, 255, 143), rgb(36, 164, 91) 100%)";
-      coverGoal.status = "rgb(38, 203, 109)";
-      coverGoal.filter = "blur(20.6px)";
+      const finish = goalColor[Goal.WireIntegrity];
+      finish.isCompleted = true;
+      finish.background = finish.roundBackground;
+      finish.status = finish.roundStatus;
     };
-
-    const dynamicImages = ['dynamic', 'dynamic'];
 
     const removeSeal = () => {
       isSealDisappearing.value = true;
@@ -190,8 +187,8 @@ export default defineComponent({
     const activateNextGoalsStage = () => {
       if (bolts.value.every(bolt => bolt.isRemoved)) {
         const sealIntegrityGoal = goalColor[Goal.SealIntegrity];
-        sealIntegrityGoal.status = "rgb(38, 203, 109)";
-        sealIntegrityGoal.background = "radial-gradient(61.00% 61.00% at 50% 50%, rgb(60, 255, 143), rgb(36, 164, 91) 100%)";
+        sealIntegrityGoal.status = sealIntegrityGoal.roundStatus;
+        sealIntegrityGoal.background = sealIntegrityGoal.roundBackground;
       }
     };
 
@@ -271,7 +268,6 @@ export default defineComponent({
         coverElement.addEventListener('mousedown', onMouseDown as EventListener);
       }
       processRect.value = document.querySelector('.process')?.getBoundingClientRect() || null;
-      console.log("processRect обновлён:", processRect.value);
     });
 
     onBeforeUnmount(() => {

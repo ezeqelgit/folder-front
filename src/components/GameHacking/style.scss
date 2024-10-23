@@ -5,3 +5,109 @@ $base: 1920;
 @function pxToVw($px) {
   @return ($px / $base) * 100vw;
 }
+
+.Hacking {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-image: url("./assets/img/background.png");
+  user-select: none;
+  overflow: hidden;
+
+  .windowGame {
+    width: pxToVw(1091);
+    height: pxToVw(759);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+    .game {
+      position: absolute;
+      width: pxToVw(1091);
+      height: pxToVw(558);
+      top: pxToVw(80);
+      display: flex;
+      flex-direction: column;
+      gap: pxToVw(11);
+
+      .header {
+        width: pxToVw(1043);
+        display: flex;
+        flex-direction: column;
+        align-self: center;
+        gap: pxToVw(10);
+
+        .title {
+          text-align: left;
+
+          span {
+            font-family: "Micra";
+            color: rgb(20, 148, 20);
+            font-size: pxToVw(20);
+            font-weight: 400;
+            text-transform: uppercase;
+          }
+        }
+
+        
+        .description {
+          text-align: left;
+
+          span {
+            font-family: "Micra";
+            color: rgba(20, 148, 20, 0.55);
+            font-size: pxToVw(12);
+            font-weight: 400;
+            text-transform: uppercase;
+          }
+        }
+      }
+
+      .process {
+        display: flex;
+        flex-direction: column;
+        gap: pxToVw(30);
+
+        .buffer {
+          display: flex;
+          flex-direction: column;
+          gap: pxToVw(8);
+
+          span {
+            color: rgb(20, 148, 20);
+            font-size: pxToVw(14);
+            font-weight: 400;
+            font-family: "Micra";
+            width: pxToVw(642);
+            margin-left: auto;
+          }
+
+          .table {
+            width: 100%;
+            height: pxToVw(76);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .wrapperTable {
+              display: flex;
+              align-items: center;
+              gap: pxToVw(22);
+              width: pxToVw(1027);
+              height: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+}

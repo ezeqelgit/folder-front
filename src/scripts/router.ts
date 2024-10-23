@@ -6,6 +6,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "Signaling",
     component: () => import("../components/GameSignaling/Signaling.vue"),
   },
+  {
+    path: "/Hacking",
+    name: "Hacking",
+    component: () => import("../components/GameHacking/Hacking.vue"),
+  },
 ];
 
 const router = createRouter({

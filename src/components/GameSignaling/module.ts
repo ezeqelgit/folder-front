@@ -4,8 +4,8 @@ import { Signaling, Timer, Wires } from "./types/Signaling"
 const Signaling: Module<Signaling, unknown> = ({
   state: {
     wires: {
-      total: 5,
-      correct: 4
+      total: 1,
+      correct: 1
     },
     timer: {
       start: 100,
