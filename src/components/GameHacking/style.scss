@@ -37,7 +37,7 @@ $base: 1920;
       top: pxToVw(80);
       display: flex;
       flex-direction: column;
-      gap: pxToVw(11);
+      gap: pxToVw(20);
 
       .header {
         width: pxToVw(1043);
@@ -75,6 +75,8 @@ $base: 1920;
       .process {
         display: flex;
         flex-direction: column;
+        align-items: center;
+        justify-content: center;
         gap: pxToVw(30);
 
         .buffer {
@@ -87,13 +89,11 @@ $base: 1920;
             font-size: pxToVw(14);
             font-weight: 400;
             font-family: "Micra";
-            width: pxToVw(642);
+            width: pxToVw(715);
             margin-left: auto;
           }
 
           .table {
-            width: 100%;
-            height: pxToVw(76);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -103,8 +103,172 @@ $base: 1920;
               align-items: center;
               gap: pxToVw(22);
               width: pxToVw(1027);
-              height: 100%;
+              gap: pxToVw(22);
+
+              .timer {
+                width: pxToVw(323);
+                display: flex;
+                flex-direction: column;
+                gap: pxToVw(4);
+
+                .wrapperTimer {
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+
+                  .title {
+                    text-align: left;
+
+                    span {
+                      color: rgb(20, 148, 20);
+                      font-family: "Micra";
+                      font-size: pxToVw(14);
+                      font-weight: 400;
+                    }
+                  }
+
+                  .count {
+                    padding: pxToVw(10);
+                    box-sizing: border-box;
+                    border: pxToVw(1) solid rgb(20, 148, 20);
+                    height: pxToVw(44);
+                    width: pxToVw(75);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    span {
+                      color: rgb(20, 148, 20);
+                      font-family: "Micra";
+                      font-size: pxToVw(14);
+                      font-weight: 400;
+                    }
+                  }
+                }
+
+                .separator {
+                  width: pxToVw(323);
+                  height: pxToVw(6);
+                  box-shadow: 0 0 pxToVw(17) 0 rgba(20, 148, 20, 0.5);
+                  background: rgb(20, 148, 20);
+                }
+              }
+
+              .result {
+                display: flex;
+                align-items: center;
+                gap: pxToVw(24);
+                width: pxToVw(516);
+                height: pxToVw(56);
+
+                .block {
+                  padding: pxToVw(10);
+                  box-sizing: border-box;
+                  border: pxToVw(1) solid rgb(20, 148, 20);
+                  width: pxToVw(310);
+                  height: pxToVw(56);
+                  display: flex;
+                  align-items: center;
+                  gap: pxToVw(10);
+
+                  .cell {
+                    width: pxToVw(40);
+                    height: pxToVw(40);
+                    box-sizing: border-box;
+                    box-sizing: border-box;
+                    border: pxToVw(2) dashed rgba(20, 148, 20, 0.5);
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    gap: pxToVw(1);
+                    position: relative;
+
+                    .numberMatrix {
+                      text-align: center;
+
+                      span {
+                        color: rgb(73, 201, 201);
+                        font-family: "Micra";
+                        font-size: pxToVw(14);
+                        font-weight: 400;
+                      }
+                    }
+
+                    .separator { 
+                      width: pxToVw(32);
+                      height: pxToVw(3);
+                      box-shadow: 0 0 pxToVw(8.2) 0 rgb(20, 148, 20);
+                      background: rgb(20, 148, 20);
+                      position: absolute;
+                      top: pxToVw(33);
+                    }
+
+                    &.selected {
+                      width: pxToVw(40);
+                      height: pxToVw(40);
+                      box-sizing: border-box;
+                      border: pxToVw(2) solid rgb(73, 201, 201);
+                      box-shadow: 0 0 pxToVw(14) 0 rgb(73, 201, 201);
+                      background: rgba(73, 201, 201, 0.26);
+                      display: flex;
+                      flex-direction: column;
+                      justify-content: center;
+                      align-items: center;
+                      gap: pxToVw(1);
+                      position: relative;
+
+                      .numberMatrix {
+                        text-align: center;
+  
+                        span {
+                          color: rgb(73, 201, 201);
+                          font-family: "Micra";
+                          font-size: pxToVw(14);
+                          font-weight: 400;
+                        }
+                      }
+  
+                      .separator { 
+                        width: pxToVw(32);
+                        height: pxToVw(3);
+                        box-shadow: 0 0 pxToVw(8.2) 0 rgb(20, 148, 20);
+                        background: rgb(20, 148, 20);
+                        position: absolute;
+                        top: pxToVw(33);
+                      }
+                    }
+                  }
+                }
+
+                .description {
+                  text-align: left;
+                  
+                  span {
+                    color: rgb(20, 148, 20);
+                    font-family: "Micra";
+                    font-size: pxToVw(4);
+                    font-weight: 400;
+                  }
+                }
+              }
             }
+          }
+        }
+
+        .matrix {
+          width: pxToVw(1027);
+          display: flex;
+          justify-content: space-between;
+
+          .blockMatrix {
+            width: pxToVw(323);
+            height: pxToVw(327);
+          }
+
+          .consistency {
+            width: pxToVw(682);
+            height: pxToVw(327);
           }
         }
       }
