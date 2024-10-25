@@ -89,7 +89,7 @@ $base: 1920;
             font-size: pxToVw(14);
             font-weight: 400;
             font-family: "Micra";
-            width: pxToVw(715);
+            width: pxToVw(683);
             margin-left: auto;
           }
 
@@ -146,11 +146,22 @@ $base: 1920;
                   }
                 }
 
-                .separator {
+                .scale {
                   width: pxToVw(323);
                   height: pxToVw(6);
-                  box-shadow: 0 0 pxToVw(17) 0 rgba(20, 148, 20, 0.5);
-                  background: rgb(20, 148, 20);
+                  border: 1px solid rgb(20, 148, 20);
+                  position: relative;
+                  display: flex;
+                  align-items: center;
+
+                  .activeScale {
+                    position: absolute;
+                    width: 80%;
+                    height: 100%;
+                    box-shadow: 0 0 pxToVw(17) 0 rgba(20, 148, 20, 0.5);
+                    background: rgb(20, 148, 20);
+                    transition: width 0.1s linear;
+                  }
                 }
               }
 
@@ -165,13 +176,13 @@ $base: 1920;
                   padding: pxToVw(10);
                   box-sizing: border-box;
                   border: pxToVw(1) solid rgb(20, 148, 20);
-                  width: pxToVw(310);
+                  width: auto;
                   height: pxToVw(56);
                   display: flex;
                   align-items: center;
                   gap: pxToVw(10);
 
-                  .cell {
+                  .cellBuffer {
                     width: pxToVw(40);
                     height: pxToVw(40);
                     box-sizing: border-box;
@@ -264,11 +275,292 @@ $base: 1920;
           .blockMatrix {
             width: pxToVw(323);
             height: pxToVw(327);
+            display: flex;
+            flex-direction: column;
+
+            .headerMatrix {
+              width: pxToVw(323);
+              height: pxToVw(41);
+              box-shadow: 0 0 pxToVw(45) 0 rgba(20, 148, 20, 0.5);
+              background: rgb(20, 148, 20);
+              clip-path: polygon(pxToVw(13) 0, 100% 0, 100% 100%, 0 100%, 0 pxToVw(13));
+              padding-left: pxToVw(16);
+              box-sizing: border-box;
+              display: flex;
+              align-items: center;
+              justify-content: flex-start;
+              gap: pxToVw(12);
+
+              img {
+                width: pxToVw(16);
+                height: pxToVw(16);
+              }
+
+              span {
+                color: rgb(10, 70, 10);
+                font-family: "Micra";
+                font-size: pxToVw(14);
+                font-weight: 400;
+              }
+            }
+
+            .bodyMatrix {
+              width: pxToVw(323);
+              height: pxToVw(286);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background: rgb(2, 20, 2);
+              border: pxToVw(1) solid rgb(20, 148, 20);
+              border-top: none;
+              box-sizing: border-box;
+
+              .gridMatrix {
+                width: 100%;
+                height: 100%;
+                display: grid;
+                align-items: center;
+                justify-content: center;
+
+                .cellMatrix {
+                  width: 100%;
+                  height: 100%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+
+                  &.disabled {
+                    pointer-events: none;
+                  }
+
+                  &.active-row,
+                  &.active-col {
+                    background-color: rgba(255, 255, 255, 0.05);
+                  }
+            
+                  &.hovered {
+                    background-color: rgba(20, 148, 20, 0.25);
+                  }
+
+                  span {
+                    color: rgb(20, 148, 20);
+                    font-family: "Micra";
+                    font-size: pxToVw(15);
+                    font-weight: 400;
+                  }
+
+                  &:hover {
+
+                    .externalLayerCellMatrix {
+                      height: 100%;
+                      aspect-ratio: 1 / 1;
+                      box-sizing: border-box;
+                      border: pxToVw(2) solid rgb(73, 201, 201);
+                      box-shadow: 0 0 pxToVw(11) 0 rgb(64, 183, 183);
+                      background: rgba(73, 201, 201, 0.21);
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+
+                      .internalLayerCellMatrix {
+                        height: pxToVw(48);
+                        aspect-ratio: 1 / 1;
+                        box-sizing: border-box;
+                        border: pxToVw(1) solid rgb(73, 201, 201);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+
+                        span {
+                          color: rgb(73, 201, 201);
+                          font-family: "Micra";
+                          font-size: pxToVw(15);
+                          font-weight: 400;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
 
           .consistency {
             width: pxToVw(682);
             height: pxToVw(327);
+            display: flex;
+            flex-direction: column;
+
+            .title {
+              width: 100%;
+              height: pxToVw(42);
+              box-sizing: border-box;
+              border: pxToVw(1) solid rgb(20, 148, 20);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+
+              .wrapper {
+                width: pxToVw(659);
+                display: flex;
+                align-items: center;
+                gap: pxToVw(10);
+
+                img {
+                  width: pxToVw(21);
+                  height: pxToVw(21);
+                }
+
+                span {
+                  color: rgb(20, 148, 20);
+                  font-family: "Micra";
+                  font-weight: 400;
+                  font-size: pxToVw(14);
+                }
+              }
+            }
+
+            .info {
+              width: 100%;
+              height: pxToVw(285);
+              box-sizing: border-box;
+              border: pxToVw(1) solid rgb(20, 148, 20);
+              border-top: none;
+              background: rgb(2, 20, 2);
+              display: flex;
+              display: flex;
+              flex-direction: column;
+              gap: pxToVw(14);
+              padding: pxToVw(18);
+
+              .cellInfo {
+                display: flex;
+                flex-direction: row;
+                gap: pxToVw(26);
+                height: pxToVw(51);
+                width: 100%;
+
+                .sequenceOptions {
+                  width: pxToVw(272);
+                  height: pxToVw(51);
+                  display: flex;
+                  flex-direction: row;
+                  align-items: center;
+                  justify-content: flex-start;
+
+                  .cellSequenceOptions {
+                    height: pxToVw(46);
+                    width: pxToVw(54);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-sizing: border-box;
+
+                    span{
+                      color: rgb(255, 255, 255);
+                      font-family: "Micra";
+                      font-size: pxToVw(15);
+                      font-weight: 400;
+                    }
+
+                    &.choosed{
+
+                      .externalLayerCellSequenceOptions{
+                        height: pxToVw(42);
+                        aspect-ratio: 1/1;
+                        box-sizing: border-box;
+                        border: pxToVw(2) solid rgb(73, 201, 201);
+                        box-shadow: 0 0 pxToVw(11) 0 rgb(64, 183, 183);
+                        background: rgba(73, 201, 201, 0.21);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+  
+                        .internalLayerCellSequenceOptions{
+                          height: pxToVw(38);
+                          aspect-ratio: 1/1;
+                          box-sizing: border-box;
+                          border: pxToVw(1) solid rgb(73, 201, 201);
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+  
+                          span{
+                            color: rgb(73, 201, 201);
+                            font-family: "Micra";
+                            font-size: pxToVw(15);
+                            font-weight: 400;
+                          }
+                        }
+                      }
+                    }
+
+                    &.used {
+                      span{
+                        color: rgb(199, 201, 73);
+                        font-family: "Micra";
+                        font-size: pxToVw(15);
+                        font-weight: 400;
+                      }
+                    }
+                  }
+                }
+
+                .cellAward {
+                  width: pxToVw(334);
+                  height: pxToVw(51);
+                  display: flex;
+                  align-items: center;
+                  gap: pxToVw(13);
+
+                  .icon {
+                    width: pxToVw(32);
+                    height: pxToVw(32);
+
+                    img {
+                      width: 100%;
+                      height: 100%;
+                    }
+                  }
+
+                  .description {
+                    display: flex;
+                    flex-direction: column;
+                    gap: pxToVw(6);
+
+                    .nameAward {
+                      height: pxToVw(13);
+                      display: flex;
+                      align-items: center;
+                      justify-content: flex-start;
+
+                      span {
+                        color: rgb(255, 255, 255);
+                        font-family: "Micra";
+                        font-size: pxToVw(13);
+                        font-weight: 400;
+                        text-transform: uppercase;
+                      }
+                    }
+
+                    .outline {
+                      height: pxToVw(33);
+                      display: flex;
+                      align-items: center;
+                      justify-content: flex-start;
+
+                      span {
+                        color: rgb(20, 148, 20);
+                        font-family: "Micra";
+                        font-size: pxToVw(10);
+                        font-weight: 400;
+                        text-transform: uppercase;
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }

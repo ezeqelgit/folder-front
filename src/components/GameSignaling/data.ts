@@ -113,7 +113,7 @@ export default defineComponent({
       finish.status = finish.roundStatus;
       isCursor.value = false;
       isCursorWirecutters.value = false;
-      window.mp.events("CEF:SERVER:Signaling:Finish")
+      window.mp.trigger("CEF:SERVER:GameSignaling:Finish");
     };
 
     const removeSeal = () => {
