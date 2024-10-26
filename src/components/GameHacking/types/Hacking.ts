@@ -15,6 +15,7 @@ export type SpecsData = {
 }
 
 export type Reward = {
+  id: number
   nameReward: string
   descriptionReward: string
   complexityReward: number

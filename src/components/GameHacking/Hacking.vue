@@ -60,7 +60,7 @@
                   <div class="cellMatrix" v-for="(cell, index) in matrix" :key="index"
                     @mouseenter="onMouseEnterCell(cell, index)" @mouseleave="onMouseLeaveCell(index)"
                     @click="onClickCell(cell, index)" :class="{
-                      'disabled': !isCellClickable(index) || cell === '[ ... ]',
+                      'disabled': !isCellClickable(index) || cell === '[ ... ]' || unClickable === true,
                       'hovered': isHoveredCell(index),
                       'active-row': isActiveRow(index),
                       'active-col': isActiveCol(index)
@@ -82,20 +82,36 @@
                 </div>
               </div>
               <div class="info">
-                <div class="cellInfo" v-for="(reward, index) in listRewards" :key="index">
-                  <div class="sequenceOptions">
-                    <div class="cellSequenceOptions" v-for="(symbol, pathElementIndex) in paths[index]" :key="pathElementIndex"
-                      :class="{ 'choosed': choosedMap.get(index) === pathElementIndex }">
+                <div class="cellInfo" v-for="(reward, index) in listRewards" :key="index"
+                  :class="{ win: reward.isWin.value === true, lose: reward.isWin.value === false }"
+                >
+                  <div class="sequenceOptions" v-if="reward.isWin.value === null">
+                    <div v-for="(path, pathIndex) in paths[index]" :key="pathIndex" class="cellSequenceOptions"
+                      :class="{ 'choosed': path.isChoosed, 'used': path.isUsed, 'actual': pathIndex == clicksCount}"
+                    >
                       <div class="externalLayerCellSequenceOptions">
                         <div class="internalLayerCellSequenceOptions">
-                          <span>{{ symbol }}</span>
+                          <span>{{ path.value }}</span>
                         </div>
                       </div>
                     </div>
                   </div>
+                  <div class="message" v-if="reward.isWin.value != null">
+                    <div class="winMessage" v-if="reward.isWin.value === true">
+                      <img :src="svg['winIcon']">
+                      <span>установлено</span>
+                    </div>
+                    <div class="loseMessage" v-if="reward.isWin.value === false">
+                      <img :src="svg['loseIcon']">
+                      <span>провалено</span>
+                    </div>
+                  </div>
                   <div class="cellAward">
-                    <div class="icon">
+                    <div class="icon" v-if="reward.isWin.value === null">
                       <img :src="svg['extraction']">
+                    </div>
+                    <div class="icon" v-if="reward.isWin.value != null">
+                      <img :src="svg['extractionResult']">
                     </div>
                     <div class="description">
                       <div class="nameAward">

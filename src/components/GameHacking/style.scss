@@ -182,6 +182,7 @@ $base: 1920;
                   align-items: center;
                   gap: pxToVw(10);
 
+
                   .cellBuffer {
                     width: pxToVw(40);
                     height: pxToVw(40);
@@ -206,7 +207,7 @@ $base: 1920;
                       }
                     }
 
-                    .separator { 
+                    .separator {
                       width: pxToVw(32);
                       height: pxToVw(3);
                       box-shadow: 0 0 pxToVw(8.2) 0 rgb(20, 148, 20);
@@ -228,10 +229,16 @@ $base: 1920;
                       align-items: center;
                       gap: pxToVw(1);
                       position: relative;
+                      animation: blink-animation 1s infinite;
+
+                      @keyframes blink-animation {
+                        0%, 100% { opacity: 1; }
+                        50% { opacity: 0.7; }
+                      }
 
                       .numberMatrix {
                         text-align: center;
-  
+
                         span {
                           color: rgb(73, 201, 201);
                           font-family: "Micra";
@@ -239,14 +246,20 @@ $base: 1920;
                           font-weight: 400;
                         }
                       }
-  
-                      .separator { 
+
+                      .separator {
                         width: pxToVw(32);
                         height: pxToVw(3);
                         box-shadow: 0 0 pxToVw(8.2) 0 rgb(20, 148, 20);
                         background: rgb(20, 148, 20);
                         position: absolute;
                         top: pxToVw(33);
+                        animation: blink-animation 1s infinite;
+
+                        @keyframes blink-animation {
+                          0%, 100% { opacity: 1; }
+                          50% { opacity: 0.5; }
+                        }
                       }
                     }
                   }
@@ -316,15 +329,13 @@ $base: 1920;
               box-sizing: border-box;
 
               .gridMatrix {
-                width: 100%;
-                height: 100%;
+                height: 90%;
+                aspect-ratio: 1/1;
                 display: grid;
-                align-items: center;
+                align-content: center;
                 justify-content: center;
 
                 .cellMatrix {
-                  width: 100%;
-                  height: 100%;
                   display: flex;
                   align-items: center;
                   justify-content: center;
@@ -352,7 +363,7 @@ $base: 1920;
                   &:hover {
 
                     .externalLayerCellMatrix {
-                      height: 100%;
+                      height: 90%;
                       aspect-ratio: 1 / 1;
                       box-sizing: border-box;
                       border: pxToVw(2) solid rgb(73, 201, 201);
@@ -363,7 +374,7 @@ $base: 1920;
                       justify-content: center;
 
                       .internalLayerCellMatrix {
-                        height: pxToVw(48);
+                        height: 90%;
                         aspect-ratio: 1 / 1;
                         box-sizing: border-box;
                         border: pxToVw(1) solid rgb(73, 201, 201);
@@ -386,7 +397,7 @@ $base: 1920;
           }
 
           .consistency {
-            width: pxToVw(682);
+            width: pxToVw(690);
             height: pxToVw(327);
             display: flex;
             flex-direction: column;
@@ -430,27 +441,86 @@ $base: 1920;
               display: flex;
               display: flex;
               flex-direction: column;
-              gap: pxToVw(14);
-              padding: pxToVw(18);
 
               .cellInfo {
                 display: flex;
                 flex-direction: row;
-                gap: pxToVw(26);
-                height: pxToVw(51);
-                width: 100%;
+                align-items: center;
+                gap: pxToVw(14);
+                height: pxToVw(76);
+                width: pxToVw(686);
+                box-sizing: border-box;
+                padding: 0 pxToVw(12);
+
+                &.win {
+                  background-color: #49C9C9;
+
+                  .sequenceOptions {
+                    width: pxToVw(400);
+                    height: 100%;
+                  }
+
+                  .cellAward {
+
+                    .description {
+
+                      .nameAward {
+
+                        span {
+                          color: rgb(19, 50, 50);
+                        }
+                      }
+
+                      .outline {
+
+                        span {
+                          color: rgb(19, 50, 50);
+                        }
+                      }
+                    }
+                  }
+                }
+
+                &.lose {
+                  background-color: #C94949;
+
+                  .sequenceOptions {
+                    width: pxToVw(400);
+                    height: 100%;
+                  }
+
+                  .cellAward {
+
+                    .description {
+
+                      .nameAward {
+
+                        span {
+                          color: rgb(19, 50, 50);
+                        }
+                      }
+
+                      .outline {
+
+                        span {
+                          color: rgb(19, 50, 50);
+                        }
+                      }
+                    }
+                  }
+                }
 
                 .sequenceOptions {
-                  width: pxToVw(272);
-                  height: pxToVw(51);
+                  width: pxToVw(400);
+                  height: 100%;
                   display: flex;
                   flex-direction: row;
                   align-items: center;
                   justify-content: flex-start;
 
                   .cellSequenceOptions {
-                    height: pxToVw(46);
-                    width: pxToVw(54);
+                    height: 100%;
+                    width: pxToVw(38);
                     display: flex;
                     align-items: center;
                     justify-content: center;
@@ -459,17 +529,31 @@ $base: 1920;
                     span{
                       color: rgb(255, 255, 255);
                       font-family: "Micra";
-                      font-size: pxToVw(15);
+                      font-size: pxToVw(12);
                       font-weight: 400;
+                    }
+
+                    &.actual{
+                      background-color: rgba(255, 255, 255, 0.05);
+                    }
+
+                    &.used{
+
+                      span{
+                        color: rgb(73, 201, 201);
+                        font-family: "Micra";
+                        font-size: pxToVw(12);
+                        font-weight: 400;
+                      }
                     }
 
                     &.choosed{
 
                       .externalLayerCellSequenceOptions{
-                        height: pxToVw(42);
+                        height: pxToVw(35);
                         aspect-ratio: 1/1;
                         box-sizing: border-box;
-                        border: pxToVw(2) solid rgb(73, 201, 201);
+                        border: pxToVw(0.6) solid rgb(73, 201, 201);
                         box-shadow: 0 0 pxToVw(11) 0 rgb(64, 183, 183);
                         background: rgba(73, 201, 201, 0.21);
                         display: flex;
@@ -477,10 +561,10 @@ $base: 1920;
                         justify-content: center;
   
                         .internalLayerCellSequenceOptions{
-                          height: pxToVw(38);
+                          height: pxToVw(30);
                           aspect-ratio: 1/1;
                           box-sizing: border-box;
-                          border: pxToVw(1) solid rgb(73, 201, 201);
+                          border: pxToVw(0.2) solid rgb(73, 201, 201);
                           display: flex;
                           align-items: center;
                           justify-content: center;
@@ -488,34 +572,54 @@ $base: 1920;
                           span{
                             color: rgb(73, 201, 201);
                             font-family: "Micra";
-                            font-size: pxToVw(15);
+                            font-size: pxToVw(12);
                             font-weight: 400;
                           }
                         }
                       }
                     }
+                  }
+                }
 
-                    &.used {
-                      span{
-                        color: rgb(199, 201, 73);
-                        font-family: "Micra";
-                        font-size: pxToVw(15);
-                        font-weight: 400;
-                      }
+                .message {
+                  width: pxToVw(400);
+                  height: pxToVw(45);
+                  display: flex;
+                  align-items: center;
+                  padding-left: pxToVw(40);
+
+                  .winMessage, .loseMessage {
+                    height: pxToVw(44);
+                    width: auto;
+                    display: flex;
+                    align-items: center;
+                    flex-direction: row;
+                    gap: pxToVw(10);
+
+                    img {
+                      height: pxToVw(24);
+                      aspect-ratio: 1/1;
+                    }
+
+                    span {
+                      color: rgb(19, 50, 50);
+                      font-family: "Micra";
+                      font-size: pxToVw(15);
+                      font-weight: 400;
                     }
                   }
                 }
 
                 .cellAward {
-                  width: pxToVw(334);
-                  height: pxToVw(51);
+                  width: pxToVw(260);
+                  height: pxToVw(45);
                   display: flex;
                   align-items: center;
-                  gap: pxToVw(13);
+                  gap: pxToVw(5);
 
                   .icon {
-                    width: pxToVw(32);
-                    height: pxToVw(32);
+                    width: pxToVw(28);
+                    height: pxToVw(28);
 
                     img {
                       width: 100%;
@@ -527,9 +631,10 @@ $base: 1920;
                     display: flex;
                     flex-direction: column;
                     gap: pxToVw(6);
+                    width: pxToVw(237);
 
                     .nameAward {
-                      height: pxToVw(13);
+                      height: pxToVw(10);
                       display: flex;
                       align-items: center;
                       justify-content: flex-start;
@@ -544,7 +649,7 @@ $base: 1920;
                     }
 
                     .outline {
-                      height: pxToVw(33);
+                      height: pxToVw(30);
                       display: flex;
                       align-items: center;
                       justify-content: flex-start;

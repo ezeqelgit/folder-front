@@ -1,10 +1,10 @@
-import { defineComponent, computed, ref, onBeforeUnmount, onMounted } from "vue"
+import { defineComponent, computed, ref } from "vue"
 import { ImportImages } from "../../utils/ImportImages"
 import { useStore } from "vuex";
-import { Hacking } from "./types/Hacking";
+import { Hacking, Reward } from "./types/Hacking";
+import { Complexity, MatrixComplexity } from "./types/MatrixComplexity";
 
 const svg = ImportImages(require.context('./assets/svg/', false, /\.(png|jpe?g|svg)$/));
-const symbols = ["BD", "55", "1C", "SO", "B5", "F4", "A3", "C2", "10", "G6"]
 
 export default defineComponent({
   data() {
@@ -15,17 +15,76 @@ export default defineComponent({
   setup() {
     //module data
     const store = useStore<Hacking>();
-
     const matrixData = computed(() => store.getters.getMatrixData);
     const matrixSize = computed(() => matrixData.value.matrixSize);
     const matrixComplexity = computed(() => matrixData.value.matrixComplexity);
 
+    const symbols = computed(() => {
+      return Complexity[matrixComplexity.value as MatrixComplexity].symbols;
+    });
+
     const specsData = computed(() => store.getters.getSpecsData);
+
+    const bufferSize = computed(() => specsData.value.bufferSize);
+
+    const buffer = ref<BufferItem[]>(new Array(specsData.value.bufferSize).fill(null).map(() => ({ value: null, isSelected: false })));
+
+    const listRewards = computed(() =>
+      store.getters.getListRewards.map((reward: Reward[]) => ({ ...reward, isWin: ref(null) }))
+    );
+    
+    const clickedValue = ref<string | null>(null);
+
+    const turn = ref(1);
+
+    const clicksCount = ref(0);
+
+    const pathsStatus = ref(
+      listRewards.value.map((reward: any) => ({
+        id: reward.id,
+        isCompleted: null as boolean | null,
+      }))
+    );
+
+    const unClickable = ref(false)
+
+    // finish
+    const checkAllPathsCompleted = () => {
+      if (pathsStatus.value.every((status: any) => status.isCompleted !== null)) {
+        unClickable.value = true;
+        completeGame();
+      }
+    };
+
+    const destroyedPaths = () => {
+      listRewards.value.forEach((reward: any) => {
+        if (reward.isWin.value === null) {
+          reward.isWin.value = false;
+        }
+      });
+    
+      pathsStatus.value.forEach((status: any) => {
+        if (status.isCompleted === null) {
+          status.isCompleted = false;
+        }
+      });
+      checkAllPathsCompleted();
+    };
+
+    const completeGame = () => {
+      stopTimer();
+      window.mp.trigger("CEF:SERVER:GameHacking:Finish", JSON.stringify(pathsStatus.value));
+    };
+
+    //timer
     const time = ref(store.getters.getSpecsData.time);
     const remainingTime = ref(time.value * 1000);
     const totalTime = ref(time.value * 1000);
 
     const formatMilliseconds = (ms: number): string => {
+      if (ms == 0) {
+        destroyedPaths()
+      }
       const seconds = Math.floor(ms / 1000).toString().padStart(2, '0');
       const milliseconds = Math.floor((ms % 1000) / 10).toString().padStart(2, '0');
         return `${seconds}:${milliseconds}`;
@@ -52,14 +111,12 @@ export default defineComponent({
         }, 10);
       };
 
-    const buffer = ref<BufferItem[]>(new Array(specsData.value.bufferSize).fill(null).map(() => ({ value: null, isSelected: false })));
-
-    const listRewards = computed(() => store.getters.getListRewards);
-
-    const turn = ref(1);
-
-    let clicksCount = 0;
-
+      const stopTimer = () => {
+        if (timer) {
+          clearInterval(timer);
+          timer = null;
+        }
+      };
 
     //matrix generation
     const matrix = computed(() => generateMatrix());
@@ -71,20 +128,37 @@ export default defineComponent({
     
     const generateMatrix = () => {
       const matrix = [];
+
+      const currentSymbols = symbols.value;
       
       for (let i = 0; i < matrixSize.value * matrixSize.value; i++) {
-        matrix.push(getRandomElement(symbols));
+        matrix.push(getRandomElement(currentSymbols));
       }
-      
       return matrix;
     };
 
-    const gridStyle = computed(() => ({
-      gridTemplateColumns: `repeat(${matrixSize.value}, 1fr)`,
-      gridTemplateRows: `repeat(${matrixSize.value}, 1fr)`
-    }));
 
     //matrix styles
+    const gridStyle = computed(() => {
+      if (matrixSize.value >= 5) {
+        return {
+          gridTemplateColumns: `repeat(${matrixSize.value}, ${100 / matrixSize.value}%)`,
+          gridTemplateRows: `repeat(${matrixSize.value}, ${100 / matrixSize.value}%)`,
+        };
+      } else if (matrixSize.value == 4) {
+        return {
+          gridTemplateColumns: `repeat(${matrixSize.value}, ${80 / matrixSize.value}%)`,
+          gridTemplateRows: `repeat(${matrixSize.value}, ${80 / matrixSize.value}%)`,
+        };
+      } else {
+        return {
+          gridTemplateColumns: `repeat(${matrixSize.value}, ${60 / matrixSize.value}%)`,
+          gridTemplateRows: `repeat(${matrixSize.value}, ${60 / matrixSize.value}%)`,
+        };
+      }
+    });
+    
+
     const activeRow = ref<number | null>(null);
     const activeCol = ref<number | null>(null);
     const hoverRow = ref<number | null>(null);
@@ -120,6 +194,7 @@ export default defineComponent({
 
     //matrix interaction
     const onMouseEnterCell = (cell: string, index: number) => {
+      if (unClickable.value == true) return;
       if (matrix.value[index] === "[ ... ]") return;
 
       const bufferIndex = buffer.value.findIndex(item => item.value === null);
@@ -133,6 +208,7 @@ export default defineComponent({
     };
 
     const onMouseLeaveCell = (index: number) => {
+      if (unClickable.value == true) return;
       const bufferIndex = buffer.value.findIndex(item => item.position === index);
       if (bufferIndex !== -1 && !buffer.value[bufferIndex].isPermanent) {
         hoverRow.value = null;
@@ -143,28 +219,13 @@ export default defineComponent({
     };
 
     const onClickCell = (cell: string, index: number) => {
-      if (clicksCount == 0) {
+      if (unClickable.value == true) return; 
+      if (clicksCount.value == 0) {
         startTimer();
       }
       if (!isCellClickable(index) || matrix.value[index] === "[ ... ]") return;
-      
-      paths.value.forEach((path, pathIndex) => {
-        if (path.length === specsData.value.bufferSize) return;
     
-        if (path[clicksCount] === cell) {
-          choosedMap.value.set(pathIndex, clicksCount);
-        } else {
-          path.unshift('');
-
-          const prevIndex = choosedMap.value.get(pathIndex);
-          if (prevIndex !== undefined) {
-            choosedMap.value.set(pathIndex, prevIndex + 1);
-          }
-        }
-      });
-
-      clicksCount++;
-      
+      clickedValue.value = cell;
       matrix.value[index] = "[ ... ]";
       lastClickedIndex.value = index;
       switchTurn();
@@ -176,68 +237,68 @@ export default defineComponent({
         buffer.value[bufferIndex].isPermanent = true;
         buffer.value[bufferIndex].isSelected = false;
       }
-    };
     
+      paths.value.forEach((path: any, pathIndex: any) => {
+        const rewardStatus = pathsStatus.value[pathIndex];
+        if (listRewards.value[pathIndex].isWin.value != null) return;
+    
+        path.forEach((step: any, stepIndex: any) => {
+          if (step.isChoosed && stepIndex < clicksCount.value) {
+            step.isUsed = true;
+            step.isChoosed = false;
+          }
+        });
+    
+        if (path[clicksCount.value]?.value === cell) {
+          path[clicksCount.value].isChoosed = true;
+        } else {
+          if (path.length < bufferSize.value) {
+            path.unshift({ value: "", isChoosed: false, isUsed: false });
+          } else {
+            listRewards.value[pathIndex].isWin.value = false;
+            rewardStatus.isCompleted = false;
+          }
+        }
+    
+        if (path.length <= clicksCount.value + 1) {
+          listRewards.value[pathIndex].isWin.value = true;
+          rewardStatus.isCompleted = true;
+        }
+      });
+    
+      // clicksCount++;
+      clicksCount.value++;
+      checkAllPathsCompleted();
+    };
     
 
     //paths nd steps
     const generatePaths = () => {
-      const paths: string[][] = [];
-
-      const getRowIndex = (index: number) => Math.floor(index / matrixSize.value);
-      const getColIndex = (index: number) => index % matrixSize.value;
-
-      const getNextValidStep = (currentIndex: number | null, remainingSteps: number): number => {
-        let validIndexes = [];
-
-        if (currentIndex === null) {
-          validIndexes = matrix.value.map((_, idx) => idx);
-        } else {
-          if (remainingSteps % 2 === 1) {
-            const rowIndex = getRowIndex(currentIndex);
-            validIndexes = matrix.value.map((_, idx) => (getRowIndex(idx) === rowIndex ? idx : null)).filter((idx) => idx !== null);
+      const paths = listRewards.value.map((reward: any) => {
+        const path = [];
+        let rowIndex = 0;
+        let colIndex = Math.floor(Math.random() * matrixSize.value);
+    
+        for (let step = 0; step < reward.complexityReward; step++) {
+          path.push({
+            value: matrix.value[rowIndex * matrixSize.value + colIndex],  
+            isChoosed: false, 
+            isUsed: false   
+          });
+    
+          if (step % 2 === 0) {
+            rowIndex = (rowIndex + 1) % matrixSize.value;
           } else {
-            const colIndex = getColIndex(currentIndex);
-            validIndexes = matrix.value.map((_, idx) => (getColIndex(idx) === colIndex ? idx : null)).filter((idx) => idx !== null);
+            colIndex = (colIndex + (Math.random() > 0.5 ? 1 : -1) + matrixSize.value) % matrixSize.value;
+            rowIndex = (rowIndex + 1) % matrixSize.value;
           }
         }
-
-        return validIndexes[Math.floor(Math.random() * validIndexes.length)]!;
-      };
-
-      listRewards.value.forEach((reward: any, pathIndex: any) => {
-        const path: string[] = [];
-        let currentIndex: number | null = null;
-
-        if (pathIndex === 0) {
-          currentIndex = getNextValidStep(null, 1);
-          while (getRowIndex(currentIndex) !== 0) {
-            currentIndex = getNextValidStep(null, 1);
-          }
-        }
-
-        for (let i = 0; i < reward.complexityReward; i++) {
-          currentIndex = getNextValidStep(currentIndex, i + 1);
-          path.push(matrix.value[currentIndex]);
-        }
-
-        paths.push(path);
+        return path;
       });
-
       return paths;
     };
-  
-    const paths = ref(generatePaths());
-
-    const choosedPaths = ref<boolean[][]>(
-      paths.value.map(() => Array(specsData.value.bufferSize).fill(false))
-    );
-
-    // const choosedMap = ref<Record<string, boolean>>({});
-
-    const choosedMap = ref<Map<number, number>>(new Map());
-
-
+    
+    const paths = ref(generatePaths());    
 
     //gameplay
     const lastClickedIndex = ref<number | null>(null);
@@ -269,14 +330,6 @@ export default defineComponent({
       turn.value = turn.value === 1 ? 2 : 1;
     };
 
-    // onMounted(() => {
-    //   startTimer();
-    // });
-
-    onBeforeUnmount(() => {
-      if (timer) clearInterval(timer);
-    });
-
 
     return{
       matrixSize,
@@ -285,21 +338,18 @@ export default defineComponent({
       isActiveRow,
       isActiveCol,
       isHoveredCell,
-
-      formattedTime,
       activeScaleWidth,
-
       buffer,
       onMouseEnterCell,
       onMouseLeaveCell,
       onClickCell,
-
       listRewards,
       paths,
-      choosedPaths,
-
       isCellClickable,
-      choosedMap
+      clickedValue,
+      clicksCount,
+      formattedTime,
+      unClickable
     }
   },
 });
