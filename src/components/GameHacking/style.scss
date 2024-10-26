@@ -448,7 +448,6 @@ $base: 1920;
                 align-items: center;
                 gap: pxToVw(14);
                 height: pxToVw(76);
-                width: pxToVw(686);
                 box-sizing: border-box;
                 padding: 0 pxToVw(12);
 
@@ -568,6 +567,50 @@ $base: 1920;
                           display: flex;
                           align-items: center;
                           justify-content: center;
+  
+                          span{
+                            color: rgb(73, 201, 201);
+                            font-family: "Micra";
+                            font-size: pxToVw(12);
+                            font-weight: 400;
+                          }
+                        }
+                      }
+                    }
+
+                    &.soar{
+
+                      .externalLayerCellSequenceOptions{
+                        height: pxToVw(35);
+                        aspect-ratio: 1/1;
+                        box-sizing: border-box;
+                        border: pxToVw(0.6) solid rgb(73, 201, 201);
+                        box-shadow: 0 0 pxToVw(11) 0 rgb(64, 183, 183);
+                        background: rgba(73, 201, 201, 0.21);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        animation: blink-animation 1s infinite;
+
+                        @keyframes blink-animation {
+                          0%, 100% { opacity: 1; }
+                          50% { opacity: 0.7; }
+                        }
+  
+                        .internalLayerCellSequenceOptions{
+                          height: pxToVw(30);
+                          aspect-ratio: 1/1;
+                          box-sizing: border-box;
+                          border: pxToVw(0.2) solid rgb(73, 201, 201);
+                          display: flex;
+                          align-items: center;
+                          justify-content: center;
+                          animation: blink-animation 1s infinite;
+
+                          @keyframes blink-animation {
+                            0%, 100% { opacity: 1; }
+                            50% { opacity: 0.7; }
+                          }
   
                           span{
                             color: rgb(73, 201, 201);

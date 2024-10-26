@@ -137,7 +137,6 @@ export default defineComponent({
       return matrix;
     };
 
-
     //matrix styles
     const gridStyle = computed(() => {
       if (matrixSize.value >= 5) {
@@ -158,7 +157,6 @@ export default defineComponent({
       }
     });
     
-
     const activeRow = ref<number | null>(null);
     const activeCol = ref<number | null>(null);
     const hoverRow = ref<number | null>(null);
@@ -191,10 +189,8 @@ export default defineComponent({
       position?: number;
     }
 
-
     //matrix interaction
     const onMouseEnterCell = (cell: string, index: number) => {
-      if (unClickable.value == true) return;
       if (matrix.value[index] === "[ ... ]") return;
 
       const bufferIndex = buffer.value.findIndex(item => item.value === null);
@@ -204,17 +200,32 @@ export default defineComponent({
         buffer.value[bufferIndex].value = cell;  
         buffer.value[bufferIndex].isSelected = true; 
         buffer.value[bufferIndex].position = index; 
+
+        paths.value.forEach((path: any, pathIndex: any) => {
+          path.forEach((step: any, stepIndex: any) => {
+            if (path[clicksCount.value]?.value === cell) {
+              path[clicksCount.value].isSoar = true;
+            }
+          });
+        })
       }
     };
 
-    const onMouseLeaveCell = (index: number) => {
-      if (unClickable.value == true) return;
+    const onMouseLeaveCell = (cell: number, index: number) => {
       const bufferIndex = buffer.value.findIndex(item => item.position === index);
       if (bufferIndex !== -1 && !buffer.value[bufferIndex].isPermanent) {
         hoverRow.value = null;
         hoverCol.value = null;
         buffer.value[bufferIndex].isSelected = false; 
-        buffer.value[bufferIndex].value = null; 
+        buffer.value[bufferIndex].value = null;
+
+        paths.value.forEach((path: any, pathIndex: any) => {
+          path.forEach((step: any, stepIndex: any) => {
+            if (path[clicksCount.value]?.value === cell) {
+              path[clicksCount.value].isSoar = false;
+            }
+          });
+        })
       }
     };
 
@@ -250,6 +261,7 @@ export default defineComponent({
         });
     
         if (path[clicksCount.value]?.value === cell) {
+          path[clicksCount.value].isSoar = false;
           path[clicksCount.value].isChoosed = true;
         } else {
           if (path.length < bufferSize.value) {
@@ -270,7 +282,6 @@ export default defineComponent({
       clicksCount.value++;
       checkAllPathsCompleted();
     };
-    
 
     //paths nd steps
     const generatePaths = () => {
@@ -281,18 +292,19 @@ export default defineComponent({
     
         for (let step = 0; step < reward.complexityReward; step++) {
           path.push({
-            value: matrix.value[rowIndex * matrixSize.value + colIndex],  
-            isChoosed: false, 
-            isUsed: false   
+            value: matrix.value[rowIndex * matrixSize.value + colIndex],
+            isChoosed: false,
+            isUsed: false,
+            isSoar: false,
           });
     
           if (step % 2 === 0) {
             rowIndex = (rowIndex + 1) % matrixSize.value;
           } else {
             colIndex = (colIndex + (Math.random() > 0.5 ? 1 : -1) + matrixSize.value) % matrixSize.value;
-            rowIndex = (rowIndex + 1) % matrixSize.value;
           }
         }
+    
         return path;
       });
       return paths;

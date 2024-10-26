@@ -58,7 +58,7 @@
               <div class="bodyMatrix">
                 <div class="gridMatrix" :style="gridStyle">
                   <div class="cellMatrix" v-for="(cell, index) in matrix" :key="index"
-                    @mouseenter="onMouseEnterCell(cell, index)" @mouseleave="onMouseLeaveCell(index)"
+                    @mouseenter="onMouseEnterCell(cell, index)" @mouseleave="onMouseLeaveCell(cell, index)"
                     @click="onClickCell(cell, index)" :class="{
                       'disabled': !isCellClickable(index) || cell === '[ ... ]' || unClickable === true,
                       'hovered': isHoveredCell(index),
@@ -87,7 +87,7 @@
                 >
                   <div class="sequenceOptions" v-if="reward.isWin.value === null">
                     <div v-for="(path, pathIndex) in paths[index]" :key="pathIndex" class="cellSequenceOptions"
-                      :class="{ 'choosed': path.isChoosed, 'used': path.isUsed, 'actual': pathIndex == clicksCount}"
+                      :class="{ 'choosed': path.isChoosed, 'used': path.isUsed, 'soar': path.isSoar, 'actual': pathIndex == clicksCount}"
                     >
                       <div class="externalLayerCellSequenceOptions">
                         <div class="internalLayerCellSequenceOptions">

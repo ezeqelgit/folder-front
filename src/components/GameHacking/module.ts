@@ -6,7 +6,7 @@ const Hacking: Module<Hacking, unknown> = ({
   state: {
     matrixData:{
       matrixSize: 5,
-      matrixComplexity: MatrixComplexity.levelThird,
+      matrixComplexity: MatrixComplexity.levelOne,
     },
     specsData: {
       time: 10,
