@@ -1,7 +1,7 @@
 export enum MatrixComplexity {
   levelOne,
   levelTwo,
-  levelThird
+  levelThree
 }
 
 export type Property = {
@@ -15,7 +15,7 @@ export const Complexity: Record<MatrixComplexity, Property> = {
   [MatrixComplexity.levelTwo]: {
     symbols: ["BD", "55", "1C", "SO", "B5", "F4", "A3"],
   },
-  [MatrixComplexity.levelThird]: {
+  [MatrixComplexity.levelThree]: {
     symbols: ["BD", "55", "1C", "SO", "B5", "F4", "A3", "C2", "10", "G6"],
   },
 };
